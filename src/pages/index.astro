@@ -9,9 +9,11 @@ import { getAllGames } from '../lib/games';
 export const prerender = true;
 
 const games = await getAllGames(getDatabase());
+/** Categories available in the catalog, sorted for stable filter ordering. */
 const categories = [...new Map(
   games.flatMap((game) => (game.category ? [[game.category.id, game.category] as const] : [])),
 ).values()].sort((left, right) => left.name.localeCompare(right.name));
+/** Publishers available in the catalog, sorted for stable filter ordering. */
 const publishers = [...new Map(
   games.flatMap((game) => (game.publisher ? [[game.publisher.id, game.publisher] as const] : [])),
 ).values()].sort((left, right) => left.name.localeCompare(right.name));
@@ -105,6 +107,7 @@ const publishers = [...new Map(
       gamesGrid.querySelectorAll<HTMLElement>('[data-testid="game-card"]'),
     );
 
+    /** Applies the selected category and publisher filters to the rendered cards. */
     const updateResults = (): void => {
       const selectedCategories = new Set(
         Array.from(

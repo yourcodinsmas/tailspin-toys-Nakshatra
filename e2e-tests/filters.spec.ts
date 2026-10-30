@@ -1,4 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
+
+/** Locates a catalog card by its visible game title. */
+function getGameCard(page: Page, title: string): Locator {
+  return page.getByTestId('game-card').filter({ hasText: title });
+}
 
 test.describe('Game catalog filters', () => {
   test.beforeEach(async ({ page }) => {
@@ -6,9 +11,6 @@ test.describe('Game catalog filters', () => {
   });
 
   test('filters by one or more categories', async ({ page }) => {
-    const gameCard = (title: string) =>
-      page.getByTestId('game-card').filter({ hasText: title });
-
     await test.step('Select multiple categories', async () => {
       await page.getByRole('checkbox', { name: 'Strategy' }).check();
       await page.getByRole('checkbox', { name: 'Puzzle' }).check();
@@ -18,37 +20,31 @@ test.describe('Game catalog filters', () => {
       await expect(page.getByTestId('filter-results')).toHaveText(
         /^Showing 8 of \d+ games$/,
       );
-      await expect(gameCard('DevOps Dominion')).toBeVisible();
-      await expect(gameCard('Code Puzzle Chronicles')).toBeVisible();
-      await expect(gameCard('Cloud Conqueror')).toBeHidden();
+      await expect(getGameCard(page, 'DevOps Dominion')).toBeVisible();
+      await expect(getGameCard(page, 'Code Puzzle Chronicles')).toBeVisible();
+      await expect(getGameCard(page, 'Cloud Conqueror')).toBeHidden();
     });
   });
 
   test('filters by publisher', async ({ page }) => {
-    const gameCard = (title: string) =>
-      page.getByTestId('game-card').filter({ hasText: title });
-
     await page.getByLabel('Publisher').selectOption({ label: 'CodeForge Studios' });
 
     await expect(page.getByTestId('filter-results')).toHaveText(
       /^Showing 6 of \d+ games$/,
     );
-    await expect(gameCard('DevOps Dominion')).toBeVisible();
-    await expect(gameCard('Pipeline Conquest')).toBeHidden();
+    await expect(getGameCard(page, 'DevOps Dominion')).toBeVisible();
+    await expect(getGameCard(page, 'Pipeline Conquest')).toBeHidden();
   });
 
   test('combines category and publisher filters', async ({ page }) => {
-    const gameCard = (title: string) =>
-      page.getByTestId('game-card').filter({ hasText: title });
-
     await page.getByRole('checkbox', { name: 'Strategy' }).check();
     await page.getByLabel('Publisher').selectOption({ label: 'CodeForge Studios' });
 
     await expect(page.getByTestId('filter-results')).toHaveText(
       /^Showing 1 of \d+ games$/,
     );
-    await expect(gameCard('DevOps Dominion')).toBeVisible();
-    await expect(gameCard('Pipeline Conquest')).toBeHidden();
+    await expect(getGameCard(page, 'DevOps Dominion')).toBeVisible();
+    await expect(getGameCard(page, 'Pipeline Conquest')).toBeHidden();
   });
 
   test('clears all selected filters', async ({ page }) => {

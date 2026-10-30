@@ -9,6 +9,7 @@ import {
     getGameById,
 } from './games';
 
+/** Database IDs created by the filter-helper test fixture. */
 interface FilterFixtureIds {
     strategyCategoryId: number;
     puzzleCategoryId: number;
@@ -38,6 +39,7 @@ async function seedGames(db: Database, count: number): Promise<void> {
     }
 }
 
+/** Creates games spanning multiple categories and publishers for filter tests. */
 async function seedFilterGames(db: Database): Promise<FilterFixtureIds> {
     const [strategy] = await db
         .insert(categories)

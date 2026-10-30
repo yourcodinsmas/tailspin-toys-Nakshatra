@@ -14,8 +14,11 @@ const gameSelection = {
     publisherName: publishers.name,
 };
 
+/** Criteria for matching games in the catalog. */
 export interface GameFilters {
+    /** Match games belonging to any of these category IDs. */
     categoryIds?: readonly number[];
+    /** Restrict results to this publisher ID. */
     publisherId?: number;
 }
 
