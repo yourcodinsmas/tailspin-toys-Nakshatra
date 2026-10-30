@@ -30,3 +30,12 @@ export function formatStarRating(rating: number | null): string {
 
     return '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
 }
+
+/**
+ * Formats the numeric rating for display alongside the stars.
+ */
+export function formatRatingDisplay(rating: number | null): string {
+    if (rating === null) return 'No rating yet';
+
+    return `${clampRating(rating).toFixed(1)}/5`;
+}
